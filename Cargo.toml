@@ -1,0 +1,18 @@
+[package]
+name = "mb_ext_script"
+version = "0.1.0"
+authors = ["Austin Jenkins <austin15328@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "mb_ext_script"
+crate-type = ["cdylib"]
+
+[dependencies]
+pest = "*"
+pest_derive = "*"
+
+[dependencies.cpython]
+version = "0.2"
+default-features = false
+features = ["extension-module-2-7", "python27-sys"]

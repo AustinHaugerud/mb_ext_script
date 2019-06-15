@@ -1,0 +1,117 @@
+
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
+sep = _{ "." }
+
+animation_prefix = _{ "anim" ~ sep }
+faction_prefix = _{ "fac" ~ sep }
+info_page_prefix = _{ "ip" ~ sep }
+item_prefix = _ { "itm" ~ sep }
+map_icon_prefix = _{ "icon" ~ sep }
+game_menu_prefix = _{ "menu" ~ sep }
+mesh_prefix = _{ "mesh" ~ sep }
+mission_template_prefix = _{ "mst" ~ sep }
+particle_system_prefix = _{ "psys" ~ sep }
+party_prefix = _{ "p" ~ sep }
+party_template_prefix = _{ "pt" ~ sep }
+postfx_prefix = _{ "pfx" ~ sep }
+presentation_prefix = _{ "prsnt" ~ sep }
+quest_prefix = _{ "qst" ~ sep }
+scene_prop_prefix = _{ "spr" ~ sep }
+scene_prefix = _{ "scn" ~ sep }
+script_prefix = _{ "script" ~ sep }
+skill_prefix = _{ "skl" ~ sep }
+sound_prefix = _{ "snd" ~ sep }
+string_prefix = _{ "str" ~ sep } // Shared for module and register versions
+tableau_material_prefix = _{ "tableau" ~ sep }
+troop_prefix = _{ "trp" ~ sep }
+
+reg_prefix = _{ "reg" ~ sep }
+pos_prefix = _{ "pos" ~ sep }
+
+local_prefix = _{ ":" }
+global_prefix = _{ "$"  }
+global_autoprefixed_prefix = _{ "g" ~ sep }
+
+identifier = @{ (ASCII_ALPHA_LOWER | "_")+ }
+reg_code = @{ ASCII_DIGIT+ }
+
+statement_parameter_number =  @{ "-"? ~ ASCII_DIGIT+ }
+statement_parameter_string_register = { string_prefix ~ reg_code }
+statement_parameter_register = { reg_prefix ~ reg_code }
+statement_parameter_position_register = { pos_prefix ~ reg_code }
+
+statement_parameter_local_var = { local_prefix ~ identifier }
+
+// The difference between these two.
+// $cat -> "$cat"
+// g.cat -> "$g_cat"
+statement_parameter_global_var = { global_prefix ~ identifier }
+statement_parameter_autoprefixed_global_var = { global_autoprefixed_prefix ~ identifier }
+
+animation_id = { animation_prefix ~ identifier }
+faction_id = { faction_prefix ~ identifier }
+info_page_id = { info_page_prefix ~ identifier }
+item_id = { item_prefix ~ identifier }
+map_icon_id = { map_icon_prefix ~ identifier }
+game_menu_id = { game_menu_prefix ~ identifier }
+mesh_id = { mesh_prefix ~ identifier }
+mission_template_id = { mission_template_prefix ~ identifier }
+particle_system_id = { particle_system_prefix ~ identifier }
+party_id = { party_prefix ~ identifier }
+party_template_id = { party_template_prefix ~ identifier }
+postfx_id = { postfx_prefix ~ identifier }
+presentation_id = { presentation_prefix ~ identifier }
+quest_id = { quest_prefix ~ identifier }
+scene_prop_id = { scene_prop_prefix ~ identifier }
+scene_id = { scene_prefix ~ identifier }
+script_id = { script_prefix ~ identifier }
+skill_id = { skill_prefix ~ identifier }
+sound_id = { sound_prefix ~ identifier }
+string_id = { string_prefix ~ identifier }
+tableau_material_id = { tableau_material_prefix ~ identifier }
+troop_id = { troop_prefix ~ identifier }
+
+statement_parameter_id = {
+    animation_id |
+    faction_id |
+    info_page_id |
+    item_id |
+    map_icon_id |
+    game_menu_id |
+    mesh_id |
+    mission_template_id |
+    particle_system_id |
+    party_id |
+    party_template_id |
+    postfx_id |
+    presentation_id |
+    quest_id |
+    scene_prop_id |
+    scene_id |
+    script_id |
+    skill_id |
+    sound_id |
+    string_id |
+    tableau_material_id |
+    troop_id
+}
+
+statement_parameter =
+    {
+        statement_parameter_number |
+        statement_parameter_string_register |
+        statement_parameter_register |
+        statement_parameter_position_register |
+        statement_parameter_local_var |
+        statement_parameter_global_var |
+        statement_parameter_autoprefixed_global_var |
+        statement_parameter_id |
+        identifier
+    }
+
+statement_terminator = _{ ";" }
+statement = { identifier ~ (statement_parameter)* ~ statement_terminator }
+
+main = _{ SOI ~ statement* ~ EOI }
